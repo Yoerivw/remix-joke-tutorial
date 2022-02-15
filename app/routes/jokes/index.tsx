@@ -1,3 +1,5 @@
+import { Links } from 'remix'
+
 export default function JokesIndexRoute() {
     return (
       <div>
