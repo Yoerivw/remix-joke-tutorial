@@ -27,34 +27,29 @@ type ActionData = {
   };
 };
 
-const badRequest = (data: ActionData) =>
-  json(data, { status: 400 });
+const badRequest = (data: ActionData) => json(data, { status: 400 });
 
-export const action: ActionFunction = async ({
-  request
-}) => {
+export const action: ActionFunction = async ({request}) => {
+
   const form = await request.formData();
   const name = form.get("name");
   const content = form.get("content");
-  if (
-    typeof name !== "string" ||
-    typeof content !== "string"
-  ) {
-    return badRequest({
-      formError: `Form not submitted correctly.`
-    });
+  if (typeof name !== "string" || typeof content !== "string") {
+    return badRequest({ formError: `Form not submitted correctly.`});
   }
 
   const fieldErrors = {
     name: validateJokeName(name),
     content: validateJokeContent(content)
   };
+
   const fields = { name, content };
   if (Object.values(fieldErrors).some(Boolean)) {
     return badRequest({ fieldErrors, fields });
   }
 
   const joke = await db.joke.create({ data: fields });
+
   return redirect(`/jokes/${joke.id}`);
 };
 
